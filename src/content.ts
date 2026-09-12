@@ -1,0 +1,20 @@
+export const services = [
+  { title: 'Websites that mean business.', short: 'Website development', description: 'Your most important first impression, built to last. Distinctive design meets fast, accessible development to turn interest into action.', items: ['UI / UX design', 'Frontend development', 'E-commerce', 'CMS & integrations'] },
+  { title: 'Software, shaped around you.', short: 'Custom software', description: 'From a first product to the platform your business runs on. Thoughtful interfaces, dependable backends, and architecture with room to grow.', items: ['Web applications', 'SaaS platforms', 'Backend & APIs', 'Dashboards & portals'] },
+  { title: 'A brand worth remembering.', short: 'Brand identity', description: 'Find the clarity at the heart of your business. Then give it a voice, a visual identity, and a consistent presence that feels unmistakably yours.', items: ['Brand strategy', 'Visual identity', 'Design systems', 'Digital brand experience'] },
+  { title: 'Less busywork. More possibility.', short: 'Automation', description: 'Connect the tools, workflows, and data you already use. Remove the repetitive work so your people can focus on the work that matters.', items: ['Workflow automation', 'API integrations', 'Internal tools', 'Business systems'] },
+]
+
+export const projects = [
+  { name: 'Supply', category: 'E-COMMERCE / WEB EXPERIENCE', type: 'supply', headline: 'Digital goods. A considered shopping experience.', description: 'A self-initiated storefront concept for UI kits and digital templates. Product discovery, clear product details, and a consistent visual system explore how Netdin can bring a digital-commerce brand to life. Products and prices are illustrative; this is not a live shop or client project.', deliverables: ['Storefront visual identity', 'Responsive commerce concept', 'Product discovery & detail design', 'Reusable interface components'] },
+  { name: 'Orbit', category: 'PRODUCT DESIGN / DEVELOPMENT', type: 'orbit', headline: 'Big-picture clarity. Down to the last detail.', description: 'A self-initiated concept for a business operations platform. One clear workspace for revenue, projects, and the next decision. Figures shown are illustrative product data.', deliverables: ['Product strategy', 'Dashboard interface concept', 'Component system', 'Workflow & interaction design'] },
+]
+
+export const faqs = [
+  { question: 'What kind of businesses do you work with?', answer: 'We work with founders, growing businesses, and established teams that want to build or improve their digital presence. Whether you need your first website, a brand refresh, or a custom platform, we start with the problem you want to solve.' },
+  { question: 'Can we work together if we are in different countries?', answer: 'Absolutely. Netdin works remotely with businesses worldwide. We agree on communication channels, meeting times, and milestones at the start, with written updates that keep progress clear across time zones.' },
+  { question: 'How much does a project cost?', answer: 'Every project is scoped around its goals, complexity, and deliverables. Share your brief and budget range, and we will put together a clear proposal. You will know what is included before work begins.' },
+  { question: 'How long does a typical project take?', answer: 'Timing depends on scope, content readiness, and integrations. A focused website is very different from a custom application. After discovery, we will agree on a realistic timeline with review points and a launch plan.' },
+  { question: 'Will I own the work and source code?', answer: 'Our proposals set out ownership and handover clearly. The intended approach is that you receive the agreed source code, design assets, and documentation after final payment, with any third-party licenses identified upfront.' },
+  { question: 'Do you offer support after launch?', answer: 'Yes. We can scope ongoing maintenance, improvements, and technical support alongside the initial project. Hosting, support response times, and any recurring costs are agreed explicitly rather than left as surprises.' },
+]
