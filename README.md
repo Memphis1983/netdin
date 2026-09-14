@@ -1,6 +1,6 @@
 # Netdin
 
-Independent digital studio website for **netdin.com**, built with React, TypeScript, Vite and Appwrite. Includes responsive project previews, service enquiries, FAQ and privacy dialogs. Fonts and visual assets are served locally.
+Independent digital studio website for **netdin.com**, built with React, TypeScript, Vite and Appwrite. Includes interactive project previews, scroll-aware navigation, service enquiries, FAQ and privacy dialogs. Fonts and visual assets are served locally.
 
 ## Run Locally
 
@@ -68,7 +68,7 @@ Reference: [Appwrite React Sites quick start](https://appwrite.io/docs/products/
 
 - [x] Responsive agency homepage and project/service interactions implemented.
 - [x] Appwrite enquiry client, validation, consent, failure/retry and email fallback implemented.
-- [x] Local production build, lint and 12 Chromium browser tests passed.
+- [x] Local production build, lint and Chromium browser checks passed.
 - [ ] Configure the real Appwrite project, table, permissions and build environment.
 - [ ] Verify live writes and private enquiry access on the deployed hostname.
 - [ ] Connect the Git repository to Appwrite Sites, then verify domain DNS and HTTPS.
@@ -79,13 +79,32 @@ No real Appwrite project or public deployment has been provisioned by this repos
 
 ## Content And Assets
 
-Edit services, FAQs and project descriptions in `src/content.ts`, page structure in `src/App.tsx`, and styling in `src/site.css` and `src/index.css`. Enquiry submission is in `src/lib/enquiries.ts`. Keep its `consentVersion` aligned with material privacy-notice changes.
+Edit services, FAQs and project descriptions in `src/content.ts`, page structure in `src/App.tsx`, and editorial styling in `src/editorial.css`. Shared controls use `src/site.css` and `src/index.css`. The brand-to-product hero lives in `src/components/AgencyHero.tsx` and its adjacent stylesheet. Enquiry submission is in `src/lib/enquiries.ts`. Keep its `consentVersion` aligned with material privacy-notice changes.
 
 **Supply and Orbit are clearly labeled self-initiated concept explorations**, not claimed client engagements. Supply is a digital-goods storefront design with illustrative products and prices, not a working shop. Orbit's dashboard is an illustrative design preview, not a live operational application. Replace these with authorized client work when available. The studio section uses a responsive design-to-code workflow illustration, not office photography or an actual client project. Its interface data and code are illustrative.
 
-The hero and portfolio artwork are custom local bitmaps built from the site's Supply and Orbit concept interfaces, not purchased stock or client-results claims. The hero has separate desktop and mobile compositions; portfolio artwork is lazy-loaded with reserved dimensions. Editable interface previews remain available in the project dialogs.
+The hero presents Supply as one connected brand-to-product concept: an identity sheet, the existing storefront rendered from React markup, and a matching catalogue-management design rendered from capture-only HTML. These are local browser captures, not AI-generated interfaces. The catalogue controls and sales figures are illustrative, not a working application or actual business results. A responsive picture selects desktop, short-laptop and mobile compositions (`netdin-brand-system.jpg`, `netdin-brand-system-short.jpg`, `netdin-brand-system-mobile.jpg`). The hero opens the enquiry dialog and links to selected work; it has no carousel, autoplay or WebGL dependency. Supply and Orbit remain in selected work, with All, Brand and Product filters. The earlier AI-generated Signal Loom image and Three.js sculpture source/assets remain unused by the active homepage.
 
-To regenerate all four assets, start the preview at http://127.0.0.1:5173 and run `node scripts/generate-product-hero.mjs` (requires the Playwright Chromium installation above). This writes `product-hero.png`, `product-hero-mobile.png`, `supply-study.png` and `orbit-study.png` in `public/images`. Responsive tests check hero clearance, decoded artwork, text sizes and overflow, and capture dedicated hero and project screenshots. Header, footer, contact dialog and favicon use dot-free Netdin branding.
+The project-direction chooser preselects a service in the enquiry form. Orbit's portfolio image is a locally rendered concept interface. Supply's editorial brand image is AI-generated using Azure Foundry; it depicts a fictional brand, not a photographed client project. Portfolio artwork is lazy-loaded with reserved dimensions. Project dialogs offer interface/art-direction views and a reset control. Supply has selectable brand palettes; Orbit has period selection and keyboard-accessible revenue bars with illustrative data. Navigation tracks the current section, and motion respects reduced-motion preferences.
+
+To regenerate the interface-derived assets, start the preview at http://127.0.0.1:5173 and run `node scripts/generate-product-hero.mjs` (requires the Playwright Chromium installation above). Its development-only `?artwork=static` mode preserves the original capture layouts. This writes `product-hero.png`, `product-hero-mobile.png`, `supply-study.png` and `orbit-study.png` in `public/images`. Supply's card uses `supply-editorial.jpg`. Responsive tests check hero clearance, decoded artwork, text sizes and overflow, including a 1366x641 short-laptop viewport, and capture dedicated hero and project screenshots. Interaction tests cover hero actions, keyboard focus, work filters and project explorers. Header, hero, footer, contact dialog and favicon use dot-free Netdin branding.
+
+Run `node scripts/generate-product-hero.mjs --brand-system` to regenerate only the three active hero JPEGs. It uses the same running preview and Playwright installation, needs no image-generation credentials and makes no paid image API request. Identity and catalogue layout styles live in this script; the storefront markup comes from the Supply concept in `src/App.tsx`.
+
+### Design Research And Open Source
+
+- [Instrument](https://www.instrument.com/): work categories and project-led presentation.
+- [BASIC/DEPT](https://www.basicagency.com/): prominent project media and concise positioning.
+- [Work & Co](https://www.work.co/): restrained editorial hierarchy and direct design/technology messaging.
+- [Roxo Hugo by Sitepins](https://github.com/sitepins/roxo-hugo): MIT-licensed foundation researched and cloned locally outside this application. Its portfolio-card category/title/revealed-link pattern was adapted into React with keyboard focus and touch visibility. This is not a wholesale Hugo conversion.
+
+Agency sites were visual references only; their logos, client claims, copy and media were not reused. Netdin retains its own concept artwork and Appwrite enquiry implementation. The Roxo license is preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+### Local Image Generation
+
+The optional `scripts/generate-foundry-artwork.mjs` runs only in Node.js, never in the browser. In your Git-ignored `.env`, set `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_IMAGE_ENDPOINT` (the HTTPS `services.ai.azure.com/openai/v1/images/generations` URL), and `AZURE_OPENAI_IMAGE_DEPLOYMENT`. The legacy `OPENAI_API_KEY` variable is also accepted. Never prefix the key with `VITE_`, commit it, or paste it into chat.
+
+Run `node scripts/generate-foundry-artwork.mjs --check` to validate configuration without a paid request. Select `--asset=hero`, `--asset=supply`, `--asset=sculpture` or `--asset=material` to choose the preset. Running without `--check` makes one billable medium-quality image request and saves the corresponding JPEG in `public/images`. The tested `gpt-image-2` deployment accepts JPEG and PNG, not WebP. The script refuses to overwrite an existing image and does not automatically retry failures. Keep the checked-in artwork for ordinary builds; no generation credentials are needed to run or deploy the website.
 
 The site no longer displays architecture, house or office stock photos. Earlier unused files remain in `public/images`; their source credits are retained for reference:
 
@@ -93,4 +112,4 @@ The site no longer displays architecture, house or office stock photos. Earlier 
 - Previous architecture concept (unused): https://images.unsplash.com/photo-1600585154340-be6161a56a0c
 - Previous office image (unused): https://images.unsplash.com/photo-1497366754035-f200968a6e72
 
-Review the [Unsplash license](https://unsplash.com/license) and any applicable third-party rights for your intended use. Fonts are Manrope and Space Grotesk, distributed through Fontsource. UI icons use Lucide.
+Review the [Unsplash license](https://unsplash.com/license) and any applicable third-party rights for your intended use. Fonts are Archivo, IBM Plex Mono, Manrope and Space Grotesk, distributed through Fontsource. UI icons use Lucide.

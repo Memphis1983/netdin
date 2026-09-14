@@ -1,16 +1,109 @@
 import { chromium } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
 
+async function captureBrandSystem(page, storefront) {
+  await page.evaluate((storefront) => {
+    const stage = document.createElement('main')
+    stage.className = 'brand-system-scene'
+    stage.innerHTML = `
+      <section class="system-identity"><span>01 / BRAND IDENTITY</span><strong>supply</strong><p>Good ideas.<br>Great beginnings.</p><div class="system-symbol"><i></i><i></i><i></i><i></i></div><footer><span>DIGITAL GOODS.<br>HUMAN POTENTIAL.</span><div class="system-swatches"><i></i><i></i><i></i></div></footer></section>
+      <section class="system-store"><header class="system-browser"><span>02 / WEBSITE</span><span>supply.design / collection</span><span>+</span></header>${storefront}</section>
+      <section class="system-admin"><header><strong>supply<span> / STUDIO</span></strong><span>03 / SOFTWARE</span></header><div class="system-admin-body"><aside><b>Catalogue</b><span>Orders</span><span>Customers</span><span>Analytics</span></aside><div class="system-catalogue"><div class="system-catalogue-heading"><div><h2>Your collection</h2><p>Everything you make, in one place.</p></div><span>+ New product</span></div><table><thead><tr><th>Product</th><th>Status</th><th>Price</th><th>Sales</th></tr></thead><tbody><tr><td><i class="product-icon"></i>Workspace UI kit</td><td><span>Published</span></td><td>$48</td><td>128</td></tr><tr><td><i class="product-icon product-icon-red"></i>Editorial template</td><td><span>Published</span></td><td>$32</td><td>86</td></tr></tbody></table><footer>2 PRODUCTS<span>ILLUSTRATIVE CONCEPT DATA</span></footer></div></div></section>`
+    document.body.replaceChildren(stage)
+  }, storefront)
+  await page.addStyleTag({ content: `
+    body { margin: 0; }
+    .brand-system-scene { position: relative; width: 2400px; height: 1100px; overflow: hidden; background: #edf0f4; color: #182a48; font-family: 'Manrope Variable', sans-serif; }
+    .brand-system-scene * { box-sizing: border-box; }
+    .system-identity { position: absolute; left: 1030px; top: 260px; width: 360px; height: 580px; padding: 34px; background: #2144de; color: white; display: flex; flex-direction: column; box-shadow: 0 22px 45px #182a4820; }
+    .system-identity > span { font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+    .system-identity > strong { font-family: 'Archivo Variable', sans-serif; font-weight: 750; font-size: 82px; line-height: 1; margin-top: 40px; }
+    .system-identity > p { font-size: 26px; line-height: 1.4; margin-top: 24px; }
+    .system-symbol { display: grid; grid-template-columns: repeat(2, 54px); gap: 8px; margin-top: 38px; }
+    .system-symbol i { height: 54px; border: 2px solid #cdd6ff; }
+    .system-symbol i:last-child { background: #d9ee9e; border-color: #d9ee9e; }
+    .system-identity footer { display: flex; justify-content: space-between; align-items: end; margin-top: auto; font-size: 11px; line-height: 1.6; }
+    .system-swatches { display: flex; gap: 5px; }
+    .system-swatches i { width: 24px; height: 38px; background: #f7f8fa; }
+    .system-swatches i:nth-child(2) { background: #ec5145; }
+    .system-swatches i:nth-child(3) { background: #d9ee9e; }
+    .system-store { position: absolute; left: 1440px; top: 220px; width: 850px; background: white; border: 1px solid #cbd1db; box-shadow: 0 24px 50px #182a481c; border-radius: 8px; overflow: hidden; }
+    .system-browser { display: flex; justify-content: space-between; padding: 16px 24px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #68738a; background: #fff; border-bottom: 1px solid #e2e6ed; }
+    .system-store .commerce-site { border: 0; border-radius: 0; background: #fff; }
+    .system-store .commerce-nav { padding: 20px 30px; font-size: 12px; color: #2144de; }
+    .system-store .commerce-nav b { font-family: 'Archivo Variable', sans-serif; font-size: 34px; font-weight: 750; }
+    .system-store .commerce-title { padding: 20px 30px; font-size: 36px; line-height: 1.1; color: #182a48; }
+    .system-store .commerce-product { padding: 0 30px 24px; gap: 28px; }
+    .system-store .kit-preview { background: #e7ecfc; }
+    .system-store .kit-toolbar { padding: 12px; font-size: 12px; }
+    .system-store .kit-layout { min-height: 156px; }
+    .system-store .kit-canvas { padding: 14px; }
+    .system-store .kit-swatches i { width: 24px; height: 24px; background: #2144de; }
+    .system-store .kit-swatches i:nth-child(2) { background: #d9ee9e; }
+    .system-store .kit-swatches i:nth-child(3) { background: #ec5145; }
+    .system-store .kit-chart { height: 52px; }
+    .system-store .kit-chart i { background: #2144de; }
+    .system-store .commerce-product-info > span { font-size: 12px; }
+    .system-store .commerce-product-info h3 { font-size: 23px; }
+    .system-store .commerce-product-info p { font-size: 14px; }
+    .system-store .commerce-product-info .commerce-price { font-size: 25px; margin-top: 14px; }
+    .system-store .commerce-caption { padding: 14px 30px; font-size: 12px; }
+    .system-admin { position: absolute; left: 1440px; top: 760px; width: 850px; background: #fff; border: 1px solid #cbd1db; border-radius: 8px; box-shadow: 0 24px 50px #182a481c; overflow: hidden; }
+    .system-admin > header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid #e2e6ed; }
+    .system-admin > header strong { font-size: 25px; font-family: 'Archivo Variable', sans-serif; color: #2144de; }
+    .system-admin > header strong span, .system-admin > header > span { font: 11px 'IBM Plex Mono', monospace; color: #68738a; }
+    .system-admin-body { display: grid; grid-template-columns: 138px 1fr; }
+    .system-admin aside { display: flex; flex-direction: column; gap: 18px; padding: 24px 14px; background: #f6f7fb; font-size: 13px; }
+    .system-admin aside b { background: #e4eafd; color: #2144de; padding: 8px; margin: -8px; }
+    .system-catalogue { padding: 18px 24px; }
+    .system-catalogue-heading { display: flex; align-items: center; justify-content: space-between; }
+    .system-catalogue-heading h2 { font-size: 21px; font-weight: 650; }
+    .system-catalogue-heading p { font-size: 12px; color: #68738a; margin-top: 4px; }
+    .system-catalogue-heading > span { padding: 9px 12px; background: #2144de; color: #fff; font-size: 12px; }
+    .system-catalogue table { margin-top: 20px; border-collapse: collapse; width: 100%; text-align: left; font-size: 12px; }
+    .system-catalogue th { font-size: 10px; color: #68738a; font-weight: 400; padding-bottom: 10px; }
+    .system-catalogue td { padding: 12px 0; border-top: 1px solid #e2e6ed; }
+    .system-catalogue td:first-child { display: flex; align-items: center; gap: 9px; }
+    .system-catalogue td > span { background: #edf4df; color: #3c5620; padding: 4px 7px; }
+    .product-icon { width: 20px; height: 24px; background: #2144de; display: inline-block; }
+    .product-icon-red { background: #ec5145; }
+    .system-catalogue footer { display: flex; justify-content: space-between; font: 9px 'IBM Plex Mono', monospace; color: #68738a; padding-top: 8px; }
+    .brand-system-short { height: 720px; }
+    .brand-system-short .system-identity { top: 70px; left: 1030px; }
+    .brand-system-short .system-store { top: 30px; transform: scale(.78); transform-origin: top left; }
+    .brand-system-short .system-admin { top: 460px; transform: scale(.78); transform-origin: top left; }
+    .brand-system-mobile { width: 1200px; height: 900px; }
+    .brand-system-mobile .system-identity { left: 35px; top: 45px; width: 340px; height: 580px; }
+    .brand-system-mobile .system-store { left: 410px; top: 45px; width: 850px; transform: scale(.89); transform-origin: top left; }
+    .brand-system-mobile .system-admin { left: 410px; top: 520px; width: 850px; transform: scale(.89); transform-origin: top left; }
+    .brand-system-mobile .system-identity { height: 800px; }
+    .brand-system-mobile .system-symbol { margin-top: 80px; }
+  ` })
+  await page.evaluate(() => document.fonts.ready)
+  await page.setViewportSize({ width: 2400, height: 1100 })
+  await page.screenshot({ path: fileURLToPath(new URL('../public/images/netdin-brand-system.jpg', import.meta.url)), type: 'jpeg', quality: 94, animations: 'disabled' })
+  await page.setViewportSize({ width: 2400, height: 720 })
+  await page.locator('.brand-system-scene').evaluate((element) => element.classList.add('brand-system-short'))
+  await page.screenshot({ path: fileURLToPath(new URL('../public/images/netdin-brand-system-short.jpg', import.meta.url)), type: 'jpeg', quality: 94, animations: 'disabled' })
+  await page.setViewportSize({ width: 1200, height: 900 })
+  await page.locator('.brand-system-scene').evaluate((element) => { element.classList.remove('brand-system-short'); element.classList.add('brand-system-mobile') })
+  await page.screenshot({ path: fileURLToPath(new URL('../public/images/netdin-brand-system-mobile.jpg', import.meta.url)), type: 'jpeg', quality: 94, animations: 'disabled' })
+  console.log('Generated desktop/mobile Supply brand-to-product compositions from rendered HTML. No image API request sent.')
+}
+
 const browser = await chromium.launch()
 try {
   const page = await browser.newPage({ viewport: { width: 2000, height: 1100 }, deviceScaleFactor: 1 })
-  await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle' })
+  await page.goto('http://127.0.0.1:5173/?artwork=static', { waitUntil: 'networkidle' })
   const previews = {}
   for (const name of ['Supply', 'Orbit']) {
     await page.getByRole('button', { name: `Explore ${name} concept` }).click()
     previews[name.toLowerCase()] = await page.locator(`.project-dialog ${name === 'Supply' ? '.commerce-site' : '.orbit-window'}`).evaluate((element) => element.outerHTML)
     await page.keyboard.press('Escape')
   }
+  if (process.argv.includes('--brand-system')) {
+    await captureBrandSystem(page, previews.supply)
+  } else {
   await page.evaluate(({ orbit }) => {
     const stage = document.createElement('div')
     stage.className = 'product-scene'
@@ -96,6 +189,7 @@ try {
     await page.screenshot({ path: fileURLToPath(new URL(`../public/images/${name}-study.png`, import.meta.url)), animations: 'disabled' })
   }
   console.log('Generated desktop/mobile product heroes and Supply/Orbit study artwork.')
+  }
 } finally {
   await browser.close()
 }
