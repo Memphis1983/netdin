@@ -2,23 +2,13 @@ import { useEffect, useState } from 'react'
 import { ArrowDown, ArrowRight, ArrowUpRight, Asterisk, Check, ChevronDown, Circle, Code2, GitBranch, Globe2, Layers3, Menu, MousePointer2, PanelsTopLeft, Plus, ShoppingBag, X, Zap } from 'lucide-react'
 import { ContactDialog } from './components/ContactDialog'
 import { Dialog } from './components/Dialog'
-import { ProjectExplorer } from './components/ProjectExplorer'
-import { AgencyHero } from './components/AgencyHero'
-import { usePageMotion } from './lib/usePageMotion'
 import { faqs, projects, services } from './content'
 import './site.css'
-import './editorial.css'
 
 function ProjectVisual({ type, artwork = false }: { type: string; artwork?: boolean }) {
-  if (artwork) return <ProjectVisualStatic type={type} artwork />
-  if (import.meta.env.DEV && new URLSearchParams(window.location.search).get('artwork') === 'static') return <ProjectVisualStatic type={type} />
-  return <ProjectExplorer type={type} artwork={<ProjectVisualStatic type={type} artwork />}><ProjectVisualStatic type={type} /></ProjectExplorer>
-}
-
-function ProjectVisualStatic({ type, artwork = false }: { type: string; artwork?: boolean }) {
   if (artwork) return (
     <div className={`project-visual project-artwork ${type}-artwork`}>
-      <div className="artwork-frame"><img src={type === 'supply' ? '/images/supply-editorial.jpg' : '/images/orbit-study.png'} width={type === 'supply' ? 1536 : 1440} height={type === 'supply' ? 1024 : 1100} loading="lazy" decoding="async" alt={type === 'supply' ? 'AI-generated Supply brand concept: cobalt poster, brand guidelines, colour swatches and digital-goods storefront' : 'Orbit concept: a focused workspace dashboard with project activity and illustrative revenue data'} /></div>
+      <div className="artwork-frame"><img src={`/images/${type}-study.png`} width="1440" height="1100" loading="lazy" decoding="async" alt={type === 'supply' ? 'Supply concept: coordinated brand identity, colour system and digital-goods storefront design' : 'Orbit concept: a focused workspace dashboard with project activity and illustrative revenue data'} /></div>
       <span className="visual-label"><span>{type === 'supply' ? 'A BRAND BUILT TO BUILD ON.' : 'A CLEARER VIEW OF WHAT MATTERS.'}</span><span>0{type === 'supply' ? '1' : '2'} / NETDIN</span></span>
     </div>
   )
@@ -65,14 +55,11 @@ function StudioWorkflow() {
 }
 
 function App() {
-  const { activeSection, progressRef } = usePageMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [contact, setContact] = useState<string | null>(null)
   const [project, setProject] = useState<number | null>(null)
   const [privacyOpen, setPrivacyOpen] = useState(false)
   const [activeService, setActiveService] = useState(0)
-  const [direction, setDirection] = useState(0)
-  const [workFilter, setWorkFilter] = useState('All')
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) { if (event.key === 'Escape') setMenuOpen(false) }
@@ -89,32 +76,33 @@ function App() {
         <div className="header-inner wrap">
           <a href="#home" className="wordmark" aria-label="Netdin home">netdin</a>
           <nav className={`navigation ${menuOpen ? 'is-open' : ''}`} id="main-navigation" aria-label="Main navigation">
-            <a href="#work" aria-current={activeSection === 'work' ? 'location' : undefined} onClick={() => setMenuOpen(false)}>Selected work <span>02</span></a><a href="#services" aria-current={activeSection === 'services' ? 'location' : undefined} onClick={() => setMenuOpen(false)}>What we do</a><a href="#studio" aria-current={activeSection === 'studio' ? 'location' : undefined} onClick={() => setMenuOpen(false)}>The studio</a><a href="#faq" aria-current={activeSection === 'faq' ? 'location' : undefined} onClick={() => setMenuOpen(false)}>FAQs</a>
+            <a href="#work" onClick={() => setMenuOpen(false)}>Selected work <span>02</span></a><a href="#services" onClick={() => setMenuOpen(false)}>What we do</a><a href="#studio" onClick={() => setMenuOpen(false)}>The studio</a><a href="#faq" onClick={() => setMenuOpen(false)}>FAQs</a>
           </nav>
           <button className="button button-dark header-cta" onClick={() => startProject()}>Let's talk <ArrowUpRight size={17} /></button>
           <button className="icon-button menu-button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
         </div>
-        <div ref={progressRef} className="reading-progress" aria-hidden="true" />
       </header>
-      <main id="main" className="editorial-site">
-        <AgencyHero onStart={() => startProject()} />
-        <section className="work-section wrap section-space" id="work" aria-labelledby="work-heading">
-          <div className="section-top"><div><span className="eyebrow">01 / SELECTED EXPLORATIONS</span><h2 id="work-heading">Less talk.<br />More work.</h2></div><p>Two self-initiated studies.<br />Brand thinking, built into digital experiences.</p></div>
-          <div className="work-filters" role="group" aria-label="Filter selected work">{['All', 'Brand', 'Product'].map((filter) => <button key={filter} aria-pressed={workFilter === filter} onClick={() => setWorkFilter(filter)}>{filter}<span>{filter === 'All' ? '02' : '01'}</span></button>)}</div>
-          <div className="project-grid" data-filter={workFilter}>{projects.map((item, index) => (workFilter === 'All' || (workFilter === 'Brand' ? item.type === 'supply' : item.type === 'orbit')) && <button className="project-card" key={item.name} onClick={() => setProject(index)} aria-label={`Explore ${item.name} concept`}><ProjectVisual type={item.type} artwork /><div className="project-info"><div><h3>{item.name}<span>CONCEPT EXPLORATION</span></h3><p>{item.category}</p></div><span className="round-arrow"><ArrowUpRight size={23} /></span></div><p className="project-summary">{item.headline}</p><span className="project-read-more">Explore the study <ArrowUpRight size={18} /></span></button>)}</div>
+      <main id="main">
+        <section className="hero" id="home" aria-labelledby="hero-title">
+          <picture><source media="(max-width: 1100px)" srcSet="/images/product-hero-mobile.png" /><img className="hero-image" src="/images/product-hero.png" alt="Orbit software dashboard, a self-initiated Netdin product design concept with illustrative data" fetchPriority="high" width="2000" height="1100" /></picture>
+          <div className="hero-wash" />
+          <div className="wrap hero-content">
+            <div className="eyebrow hero-eyebrow"><span className="status-dot" /> INDEPENDENT DIGITAL STUDIO</div>
+            <h1 id="hero-title">Digital products.<br />Distinctive brands.<span className="hero-byline">Made by Netdin.</span></h1>
+            <p>We turn your next big move into a digital advantage.<br className="desktop-break" /> Strategy, design, and technology. Better together.</p>
+            <div className="hero-actions"><button className="button button-dark" onClick={() => startProject()}>Build something great <ArrowUpRight size={18} /></button><a className="text-link" href="#work">Explore our thinking <ArrowDown size={17} /></a></div>
+            <div className="hero-bottom"><span>ORBIT / SELF-INITIATED SOFTWARE CONCEPT</span><a href="#intro" aria-label="Explore Netdin"><ArrowDown size={19} /></a><span>BASED IN INDIA. BUILT FOR THE WORLD.</span></div>
+          </div>
         </section>
-        <section className="intro wrap" id="intro"><div className="section-kicker"><Asterisk size={22} /><span>NOT BIG ON LAYERS.<br />BIG ON THE DETAILS.</span></div><div><h2>Strategy. Design. Code.<br /><span>One connected practice.</span></h2><p>We are Netdin, an independent design and technology studio. We shape identities, design websites and build the software behind them. The people you speak to are the people doing the work.</p></div></section>
+        <section className="intro wrap" id="intro"><div className="section-kicker"><Asterisk size={22} /><span>THE RIGHT IDEAS.<br />THE RIGHT PARTNER.</span></div><div><h2>Good design gets noticed.<br /><span>Great execution moves you forward.</span></h2><p>We're an independent digital studio bringing brand, web, software, and automation under one roof. A clear point of view. A hands-on approach. And the ambition to make your business impossible to overlook.</p></div></section>
+        <section className="work-section wrap section-space" id="work" aria-labelledby="work-heading">
+          <div className="section-top"><div><span className="eyebrow">01 / A LOOK AT OUR THINKING</span><h2 id="work-heading">Intentional by design.</h2></div><p>A glimpse of what we can imagine together.<br />Independent concepts. Real attention to detail.</p></div>
+          <div className="project-grid">{projects.map((item, index) => <button className="project-card" key={item.name} onClick={() => setProject(index)} aria-label={`Explore ${item.name} concept`}><ProjectVisual type={item.type} artwork /><div className="project-info"><div><h3>{item.name}<span>CONCEPT EXPLORATION</span></h3><p>{item.category}</p></div><span className="round-arrow"><ArrowUpRight size={23} /></span></div><p className="project-summary">{item.headline}</p></button>)}</div>
+        </section>
         <section className="services-section section-space" id="services" aria-labelledby="services-heading"><div className="wrap services-layout"><div className="services-intro"><span className="eyebrow">02 / WHAT WE BRING TO THE TABLE</span><h2 id="services-heading">One partner.<br />Every possibility.</h2><p>From the first conversation to the next chapter. The expertise you need, connected from day one.</p><button className="text-link" onClick={() => startProject()}>Find your starting point <ArrowUpRight size={19} /></button><div className="services-symbol" aria-hidden="true"><Asterisk strokeWidth={.65} /></div></div><div className="service-list">{services.map((service, index) => <article className={`service ${activeService === index ? 'active' : ''}`} key={service.short}><button className="service-toggle" aria-expanded={activeService === index} aria-controls={`service-panel-${index}`} onClick={() => setActiveService(activeService === index ? -1 : index)}><span className="service-number">0{index + 1}</span><h3>{service.short}</h3><Plus size={23} /></button><div id={`service-panel-${index}`} hidden={activeService !== index} className="service-panel"><p>{service.description}</p><ul>{service.items.map((item) => <li key={item}>{item}</li>)}</ul><button className="text-link" onClick={() => startProject(service.short)}>Let's talk {service.short.toLowerCase()} <ArrowUpRight size={16} /></button></div></article>)}</div></div></section>
         <section className="studio-section wrap section-space" id="studio"><StudioWorkflow /><div className="studio-copy"><span className="eyebrow">03 / NOT JUST ANOTHER AGENCY</span><h2>Small by choice.<br />Big on possibility.</h2><p>Great work doesn't need layers of process or a room full of people. It needs the right questions, honest conversations, and people who care about getting the details right.</p><p>That's Netdin. We work as an extension of your team, connecting the dots between how your brand looks, how your product works, and how your business grows.</p><div className="studio-principles"><div><ArrowUpRight /><h3>Direct collaboration</h3><p>Close to the work. Closer to your goals.</p></div><div><Layers3 /><h3>Connected expertise</h3><p>Design and engineering, on the same page.</p></div></div><a className="text-link" href="#process">A little about our process <ArrowDown size={17} /></a></div></section>
         <section className="process-section section-space" id="process"><div className="wrap"><div className="section-top"><div><span className="eyebrow">04 / FROM WHAT IF TO WHAT'S NEXT</span><h2>Clarity at every step.</h2></div><p>No black boxes. No disappearing acts.<br />Just a clear path from idea to impact.</p></div><div className="process-grid">{[{ title: 'Find the right problem.', text: 'We listen, ask better questions, and get clear on your goals, audience, and what success should look like.' }, { title: 'Make it make sense.', text: 'Strategy becomes structure. We shape the experience, explore the design, and agree on a direction together.' }, { title: 'Build with intention.', text: 'Design meets dependable engineering. You see the work take shape, with regular reviews along the way.' }, { title: 'Launch. Learn. Evolve.', text: 'We test, refine, and hand over with care. Then help you plan what comes next, beyond launch day.' }].map((step, index) => <div className="process-step" key={step.title}><div className="step-number">0{index + 1}<ArrowRight size={20} /></div><h3>{step.title}</h3><p>{step.text}</p></div>)}</div></div></section>
-        <section className="direction-section" aria-labelledby="direction-heading">
-          <div className="wrap">
-            <div className="direction-heading"><span className="technical">A STARTING POINT, NOT A SALES PITCH.</span><h2 id="direction-heading">What's on your mind?</h2></div>
-            <fieldset className="direction-options"><legend className="sr-only">Project direction</legend>{services.map((service, index) => <label key={service.short} className={direction === index ? 'is-selected' : ''}><input type="radio" name="project-direction" value={service.short} checked={direction === index} onChange={() => setDirection(index)} /><span className="technical">0{index + 1}</span><span>{['A better website', 'A digital product', 'A distinctive brand', 'A smarter workflow'][index]}</span><ArrowUpRight size={22} /></label>)}</fieldset>
-            <div className="direction-result" aria-live="polite" aria-atomic="true"><div><span className="technical">DIRECTION / 0{direction + 1}</span><h3>{services[direction].short}</h3><p>{services[direction].description}</p></div><ul>{services[direction].items.map((item) => <li key={item}><Check size={16} />{item}</li>)}</ul><button className="button button-dark" onClick={() => startProject(services[direction].short)}>Shape this project <ArrowUpRight size={20} /></button></div>
-          </div>
-        </section>
-        <section className="faq-section wrap section-space" id="faq"><div><span className="eyebrow">05 / BEFORE WE BEGIN</span><h2>Good questions.<br />Straight answers.</h2><p>Something else on your mind?</p><button className="text-link" onClick={() => startProject()}>Let's have a conversation <ArrowUpRight size={18} /></button></div><div className="faq-list">{faqs.map((faq) => <details className="faq-item" key={faq.question}><summary>{faq.question}<Plus size={20} /></summary><p>{faq.answer}</p></details>)}</div></section>
+        <section className="faq-section wrap section-space" id="faq"><div><span className="eyebrow">05 / A FEW THINGS YOU MIGHT ASK</span><h2>Good questions.<br />Straight answers.</h2><p>Something else on your mind?</p><button className="text-link" onClick={() => startProject()}>Let's have a conversation <ArrowUpRight size={18} /></button></div><div className="faq-list">{faqs.map((faq) => <details className="faq-item" key={faq.question}><summary>{faq.question}<Plus size={20} /></summary><p>{faq.answer}</p></details>)}</div></section>
         <section className="contact-band" id="contact"><div className="wrap"><span className="eyebrow"><span className="status-dot" /> YOUR NEXT CHAPTER STARTS HERE</span><div className="contact-band-heading"><h2>Let's make<br />something matter.</h2><button aria-label="Start a project" className="contact-circle" onClick={() => startProject()}><ArrowUpRight strokeWidth={1} /></button></div><div className="contact-band-bottom"><p>Have a clear brief or just a good feeling?<br />Either is a great place to start.</p><a href="mailto:hello@netdin.com">hello@netdin.com <ArrowUpRight size={23} /></a></div></div></section>
       </main>
       <footer className="footer"><div className="wrap"><div className="footer-top"><a href="#home" className="wordmark">netdin</a><p>Independent minds.<br />Extraordinary possibilities.</p><a href="#home" className="text-link">Back to top <ArrowUpRight size={17} /></a></div><nav className="footer-navigation" aria-label="Footer navigation"><a href="#work">Projects <ArrowUpRight size={15} /></a><a href="#services">Services <ArrowUpRight size={15} /></a><a href="#studio">Studio <ArrowUpRight size={15} /></a><a href="mailto:hello@netdin.com">Get in touch <ArrowUpRight size={15} /></a></nav><div className="footer-bottom"><span>© {new Date().getFullYear()} Netdin. All rights reserved.</span><span>INDIA ↔ EVERYWHERE</span><button onClick={() => setPrivacyOpen(true)}>Privacy notice</button></div></div></footer>

@@ -11,42 +11,27 @@ async function fillBrief(page: Page) {
   await page.getByRole('checkbox', { name: /I agree/ }).check()
 }
 
-for (const width of [320, 390, 768, 900, 1366, 1440, 1920]) {
+for (const width of [320, 390, 768, 900, 1440, 1920]) {
   test(`homepage renders without overflow at ${width}px`, async ({ page }, testInfo) => {
     test.setTimeout(60_000)
-    await page.setViewportSize({ width, height: width === 1366 ? 641 : width < 600 ? 844 : 1000 })
+    await page.setViewportSize({ width, height: width < 600 ? 844 : 1000 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     await page.goto('/')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('netdin')
-    await expect(page.locator('.agency-art')).toHaveAttribute('src', '/images/netdin-brand-system.jpg')
-    await page.locator('.agency-art').evaluate((image) => (image as HTMLImageElement).decode())
-    const expectedAsset = width <= 1100 ? 'netdin-brand-system-mobile.jpg' : width === 1366 ? 'netdin-brand-system-short.jpg' : 'netdin-brand-system.jpg'
-    expect(await page.locator('.agency-art').evaluate((image) => (image as HTMLImageElement).currentSrc)).toContain(expectedAsset)
-    await expect(page.locator('.agency-hero img')).toHaveCount(1)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Made by Netdin')
+    await expect(page.locator('.hero-image')).toHaveAttribute('src', '/images/product-hero.png')
+    await expect(page.locator('.hero-image')).toHaveAttribute('alt', /software dashboard.*concept/)
     await expect(page.locator('.project-artwork img')).toHaveCount(2)
+    expect(await page.locator('.hero-image').evaluate((image) => (image as HTMLImageElement).currentSrc)).toContain(width <= 1100 ? 'product-hero-mobile.png' : 'product-hero.png')
     await expect(page.locator('.brand-square')).toHaveCount(0)
     await expect(page.locator('.header .wordmark')).toHaveText('netdin')
     await expect(page.locator('.footer .wordmark')).toHaveText('netdin')
-    const stage = await page.locator('.agency-stage').boundingBox()
-    const artwork = await page.locator('.agency-art').boundingBox()
-    const actions = await page.locator('.agency-actions').boundingBox()
-    const caption = await page.locator('.agency-art-caption').boundingBox()
-    expect(artwork!.width).toBe(width)
-    expect(actions!.y + actions!.height).toBeLessThan(stage!.y + stage!.height)
-    expect(caption!.y).toBeGreaterThan(actions!.y + actions!.height)
-    expect(caption!.y + caption!.height).toBeLessThan(stage!.y + stage!.height)
-    if (width !== 1366) expect(artwork!.y + artwork!.height).toBeLessThan(caption!.y)
-    if (width <= 1100) expect(actions!.y + actions!.height + 12).toBeLessThan(artwork!.y)
-    for (const element of await page.locator('.agency-copy > *').all()) {
-      if (!await element.isVisible()) continue
-      const bounds = await element.boundingBox()
-      expect(bounds!.x).toBeGreaterThanOrEqual(0)
-      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width)
+    if (width <= 1100) {
+      const actions = await page.locator('.hero-actions').boundingBox()
+      const image = await page.locator('.hero-image').boundingBox()
+      expect(actions!.y + actions!.height + 8).toBeLessThanOrEqual(image!.y)
     }
-    const workEyebrow = await page.locator('#work .eyebrow').boundingBox()
-    expect(workEyebrow!.y + workEyebrow!.height).toBeLessThan(page.viewportSize()!.height)
     for (const selector of ['.hero-content > p', '.intro p', '.section-top > p', '.process-step p', '.faq-item summary', '.contact-band-bottom p']) {
       for (const element of await page.locator(selector).all()) {
         expect(await element.evaluate((node) => parseFloat(getComputedStyle(node).fontSize)), selector).toBeGreaterThanOrEqual(16)
@@ -177,7 +162,7 @@ test('brief is sent to Appwrite with consent and no public row permissions', asy
   await fillBrief(page)
   await page.getByRole('checkbox', { name: 'Website development', exact: true }).check()
   await page.getByRole('button', { name: 'Send project brief' }).click()
-  await expect(page.getByRole('dialog').getByRole('status')).toContainText('BRIEF RECEIVED')
+  await expect(page.getByRole('status')).toContainText('BRIEF RECEIVED')
   expect(payload).toMatchObject({ permissions: [], data: { email: 'alex@example.com', services: ['Website development'], consent: true, source: 'netdin.com' } })
 })
 
@@ -194,7 +179,7 @@ test('failed submissions keep the brief and allow a successful retry', async ({ 
   await expect(page.getByRole('alert')).toContainText('could not be sent')
   await expect(page.getByRole('textbox', { name: 'Your name' })).toHaveValue('Alex Taylor')
   await page.getByRole('button', { name: 'Send project brief' }).click()
-  await expect(page.getByRole('dialog').getByRole('status')).toContainText('BRIEF RECEIVED')
+  await expect(page.getByRole('status')).toContainText('BRIEF RECEIVED')
   expect(attempts).toBe(2)
 })
 
@@ -218,6 +203,6 @@ test('unconfigured backend gives an honest email fallback instead of success', a
   await page.getByRole('checkbox', { name: 'Brand identity', exact: true }).check()
   await page.getByRole('button', { name: 'Send project brief' }).click()
   await expect(page.getByRole('alert')).toContainText('Online enquiries are not connected yet')
-  await expect(page.getByRole('dialog').getByRole('status')).toHaveCount(0)
+  await expect(page.getByRole('status')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /Prefer email/ })).toHaveAttribute('href', /alex%40example.com/)
 })
