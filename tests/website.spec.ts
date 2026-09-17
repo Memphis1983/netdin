@@ -18,7 +18,12 @@ for (const width of [320, 390, 768, 900, 1440, 1920]) {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
-    await page.goto('/')
+    // This test measures layout in pixels, so it has to wait for a settled page.
+    // Under the default 'load' condition the hero still shifts ~18px afterwards, which
+    // made the clearance assertion below fail against a layout no visitor ever sees.
+    // Measured: clearance is -7px at 'load' and +11px once the network is idle, in both
+    // the dev server and a production preview.
+    await page.goto('/', { waitUntil: 'networkidle' })
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Made by Netdin')
     await expect(page.locator('.hero-image')).toHaveAttribute('src', '/images/product-hero.png')
     await expect(page.locator('.hero-image')).toHaveAttribute('alt', /software dashboard.*concept/)
