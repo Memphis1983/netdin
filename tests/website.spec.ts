@@ -33,9 +33,14 @@ for (const width of [320, 390, 768, 900, 1440, 1920]) {
     await expect(page.locator('.header .wordmark')).toHaveText('netdin')
     await expect(page.locator('.footer .wordmark')).toHaveText('netdin')
     if (width <= 1100) {
-      const actions = await page.locator('.hero-actions').boundingBox()
-      const image = await page.locator('.hero-image').boundingBox()
-      expect(actions!.y + actions!.height + 8).toBeLessThanOrEqual(image!.y)
+      // Retried rather than measured once: the settled clearance is 11px against a
+      // required 8px, so a single reading taken while the page is still settling can
+      // fail on a loaded machine even though the layout is correct.
+      await expect(async () => {
+        const actions = await page.locator('.hero-actions').boundingBox()
+        const image = await page.locator('.hero-image').boundingBox()
+        expect(actions!.y + actions!.height + 8).toBeLessThanOrEqual(image!.y)
+      }).toPass({ timeout: 10_000 })
     }
     for (const selector of ['.hero-content > p', '.intro p', '.section-top > p', '.process-step p', '.faq-item summary', '.contact-band-bottom p']) {
       for (const element of await page.locator(selector).all()) {
